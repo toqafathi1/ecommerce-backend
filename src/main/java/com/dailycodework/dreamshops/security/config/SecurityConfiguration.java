@@ -30,35 +30,6 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**", "/forgotPassword/**").permitAll()// public endpoints.permitAll()
-                        .requestMatchers("/api/v1/addresses/**").authenticated() //  Address endpoints require authentication
-                        .requestMatchers("/api/v1/products/all").permitAll()
-                        .requestMatchers("/api/v1/products/product/**").permitAll()
-                        .requestMatchers("/api/v1/products/**").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/products/product").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.POST, "/api/v1/orders").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/orders").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/orders/{userId}").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/orders/order/{orderId}").hasRole("USER")
-
-                        .requestMatchers(HttpMethod.GET, "/api/v1/carts/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/carts/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/v1/carts/{cartId}/total-price").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/v1/cart-items/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/cart-items/**").hasRole("USER")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/cart-items/**").hasRole("USER")
-
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/name/{name}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/category").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/categories/{id}").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/api/v1/images/image/download/{imageId}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/images/images").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/v1/images/image/{imageId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/images/image/{imageId}").hasRole("ADMIN")
                         .anyRequest().authenticated()) // all other endpoints authenticated
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))

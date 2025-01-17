@@ -11,6 +11,7 @@ import com.dailycodework.dreamshops.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("${api.prefix}/carts")
+@EnableMethodSecurity(prePostEnabled = true)
 public class CartController {
     private final CartService cartService;
     private final UserService userService ;
