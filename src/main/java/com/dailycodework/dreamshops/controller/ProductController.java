@@ -42,7 +42,7 @@ public class ProductController {
            Page<ProductDto> products = productService.getAllProducts(pageable);
             return  ResponseEntity.ok(new ApiResponse("success", products));
     }
-    @GetMapping("/product/{productId}")
+    @GetMapping("/id/{productId}")
     public ResponseEntity<ApiResponse> getProductById(@PathVariable Long productId) {
             Product product = productService.getProductById(productId);
             ProductDto productDto = productService.convertToDto(product);
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
 
-    @PostMapping("/product")
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> addProduct(@Valid @RequestBody AddProductRequest product) {
             Product theProduct = productService.addProduct(product);
@@ -78,7 +78,7 @@ public class ProductController {
             return ResponseEntity.ok(new ApiResponse("Product Deleted successfully!", productId));
     }
 
-    @GetMapping("/Product/by-brand-and-name")
+    @GetMapping("/search/by-brand-and-name")
     public ResponseEntity<ApiResponse> getProductByBrandAndName(@RequestParam String brandName,
                                                                 @RequestParam String productName,
                                                                 @RequestParam(defaultValue = "0") int page,
@@ -94,7 +94,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("/product/by-category-and-brand")
+    @GetMapping("/search/by-category-and-brand")
     public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category,
                                                                     @RequestParam String brand,
                                                                     @RequestParam(defaultValue = "0") int page,
@@ -109,7 +109,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("/product/{name}")
+    @GetMapping("/search/by-name/{name}")
     public ResponseEntity<ApiResponse> getProductByName(@PathVariable String name,
                                                         @RequestParam(defaultValue = "0") int page,
                                                         @RequestParam(defaultValue = "10") int size,
@@ -124,7 +124,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("/product/by-brand")
+    @GetMapping("/search/by-brand")
     public ResponseEntity<ApiResponse> getProductByBrand(@RequestParam String brand,
                                                          @RequestParam(defaultValue = "0") int page,
                                                          @RequestParam(defaultValue = "10") int size,
@@ -139,7 +139,7 @@ public class ProductController {
 
     }
 
-    @GetMapping("/product/{category}")
+    @GetMapping("/search/by-category/{category}")
     public ResponseEntity<ApiResponse> getProductByCategory(@PathVariable String category,
                                                              @RequestParam(defaultValue = "0") int page,
                                                              @RequestParam(defaultValue = "10") int size,

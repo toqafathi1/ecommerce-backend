@@ -1,5 +1,6 @@
 package com.dailycodework.dreamshops.dto;
 
+import com.dailycodework.dreamshops.security.entities.UserRole;
 import lombok.Data;
 
 import java.util.List;
@@ -11,4 +12,5 @@ public class UserDto {
     private String email;
     private List<OrderDto> orders;
     private CartDto cart;
+    private UserRole role ;
 }

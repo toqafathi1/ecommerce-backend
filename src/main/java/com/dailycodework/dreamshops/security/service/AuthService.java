@@ -2,6 +2,7 @@ package com.dailycodework.dreamshops.security.service;
 
 import com.dailycodework.dreamshops.exceptions.AlreadyExistsException;
 import com.dailycodework.dreamshops.exceptions.ResourceNotFoundException;
+import com.dailycodework.dreamshops.model.Cart;
 import com.dailycodework.dreamshops.model.User;
 import com.dailycodework.dreamshops.repository.UserRepository;
 import com.dailycodework.dreamshops.security.entities.MailBody;
@@ -38,7 +39,6 @@ public class AuthService {
         if(userRepository.existsByEmail(registerRequest.getEmail())){
             throw  new AlreadyExistsException("User with " + registerRequest.getEmail() + " already exists");
         }
-
         var user = User.builder()
                 .username(registerRequest.getUsername())
                 .email(registerRequest.getEmail())
@@ -48,6 +48,11 @@ public class AuthService {
                 .verificationCodeExpiresAt(LocalDateTime.now().plusMinutes(5))
                 .verificationToken(UUID.randomUUID().toString()) // generate random token
                 .build();
+        //create cart for user
+        Cart cart = new Cart();
+        cart.setUser(user);
+        user.setCart(cart);
+
         User savedUser = userRepository.save(user);
         // send verification email
         String verificationUrl = "http://localhost:8080/api/v1/auth/verify?token="+savedUser.getVerificationToken();

@@ -1,5 +1,6 @@
 package com.dailycodework.dreamshops.security.service;
 
+import com.dailycodework.dreamshops.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -54,11 +55,11 @@ public class JwtService {
 
     // generate token using Jwt utility class and return token as String
     public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+        // add role to token
+        if(userDetails instanceof User user ){
+            extraClaims.put("role" , user.getRole().name());
+        }
         return buildToken(extraClaims, userDetails, jwtExpiration);
-    }
-
-    public long getExpirationTime() {
-        return jwtExpiration;
     }
 
     private String buildToken(
@@ -69,7 +70,7 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(userDetails.getUsername()) // email
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)

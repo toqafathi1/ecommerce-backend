@@ -30,7 +30,6 @@ public class UserController {
             User user = userService.getUserById(userId);
             UserDto userDto = userService.convertUserToDto(user);
             return ResponseEntity.ok(new ApiResponse("Success", userDto));
-
     }
 
     @PostMapping("/user")
@@ -71,7 +70,7 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse("Admin demoted to user " , userDto));
     }
 
-    @GetMapping("/{role}")
+    @GetMapping("/role/{role}")
     public ResponseEntity<ApiResponse> getUsersByRole( @PathVariable UserRole role) {
         List<String> emails = userService.getUsersByRole(role);
         return ResponseEntity.ok(new ApiResponse("Success" , emails));

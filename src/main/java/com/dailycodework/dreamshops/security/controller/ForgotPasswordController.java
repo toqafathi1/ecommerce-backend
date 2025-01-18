@@ -7,6 +7,7 @@ import com.dailycodework.dreamshops.security.entities.MailBody;
 import com.dailycodework.dreamshops.model.User;
 import com.dailycodework.dreamshops.security.repositories.ForgotPasswordRepository;
 import com.dailycodework.dreamshops.security.service.EmailService;
+import com.dailycodework.dreamshops.security.service.ForgotPasswordService;
 import com.dailycodework.dreamshops.security.utils.ChangePassword;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
@@ -25,19 +26,23 @@ import java.util.Random;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/forgetPassword")
+@RequestMapping("/forgotPassword")
 public class ForgotPasswordController {
 
     private final UserRepository userRepository ;
     private final EmailService emailService ;
     private final ForgotPasswordRepository forgotPasswordRepository ;
     private final PasswordEncoder passwordEncoder;
+   private final ForgotPasswordService forgotPasswordService;
 
     // send mail for email verification
     @PostMapping("/verifyMail/{email}")
     public ResponseEntity<String> verifyEmail(@PathVariable String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("user not found " ));
+
+        // Delete any existing OTP records for user
+        forgotPasswordService.deleteByUser(user);
 
         int otp = otpGenerator();
         MailBody mailBody = MailBody.builder()

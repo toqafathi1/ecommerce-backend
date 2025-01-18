@@ -45,7 +45,7 @@ public class User implements UserDetails {
     private List<Order> orders;
 
     @OneToOne(mappedBy = "user" ,cascade = CascadeType.ALL, orphanRemoval = true)
-    private ForgotPassword forgetPassword;
+    private ForgotPassword forgotPassword;
 
     @Enumerated(EnumType.STRING)
     private UserRole role ;
@@ -64,6 +64,16 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
     }
 
     @Override

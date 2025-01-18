@@ -32,7 +32,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ImageController {
     private final IImageService imageService;
 
-    @PostMapping("/images")
+    @PostMapping("/image")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> saveImages(@Valid @RequestParam List<MultipartFile> files, @RequestParam Long productId) {
             List<ImageDto> imageDtos = imageService.saveImages(productId, files);
