@@ -40,7 +40,6 @@ public class CartItemController {
         Cart updatedCart = cartService.getCart(cart.getId());
         CartDto cartDto = cartService.convertToDto(updatedCart);
         return ResponseEntity.ok(new ApiResponse("Add Item Success", cartDto));
-
     }
 
     @DeleteMapping("/{cartId}/items/{itemId}")

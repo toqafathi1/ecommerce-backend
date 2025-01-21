@@ -5,19 +5,17 @@ import com.dailycodework.dreamshops.dto.CartItemDto;
 import com.dailycodework.dreamshops.exceptions.ResourceNotFoundException;
 import com.dailycodework.dreamshops.exceptions.UnauthorizedAccessException;
 import com.dailycodework.dreamshops.model.Cart;
-import com.dailycodework.dreamshops.model.CartItem;
 import com.dailycodework.dreamshops.model.User;
 import com.dailycodework.dreamshops.repository.CartItemRepository;
 import com.dailycodework.dreamshops.repository.CartRepository;
+import com.dailycodework.dreamshops.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,6 +24,7 @@ public class CartService implements ICartService{
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ModelMapper modelMapper ;
+   private final UserRepository userRepository;
 
     @Override
     public Cart getCart(Long id) {
@@ -77,6 +76,9 @@ public class CartService implements ICartService{
     }
 
     public  void validateCartOwnership(User user , Cart cart){
+        if(user == null){
+            throw new ResourceNotFoundException("User not found ");
+        }
         if(!cart.getUser().getId().equals(user.getId())){
             throw new UnauthorizedAccessException("User does not have permission to a access this cart");
         }

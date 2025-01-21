@@ -4,6 +4,7 @@ import com.dailycodework.dreamshops.security.entities.ForgotPassword;
 import com.dailycodework.dreamshops.security.entities.RefreshToken;
 import com.dailycodework.dreamshops.security.entities.UserRole;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
@@ -35,6 +36,7 @@ public class User implements UserDetails {
     private String password;
 
     @OneToMany(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Address> addresses = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -78,9 +80,8 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+       return true;
     }
-
     @Override
     public boolean isAccountNonLocked() {
         return true;
@@ -93,7 +94,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return verified;
     }
 
     public RefreshToken getRefreshToken() {

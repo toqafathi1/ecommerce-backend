@@ -1,5 +1,6 @@
 package com.dailycodework.dreamshops.security.service;
 
+import com.dailycodework.dreamshops.model.Order;
 import com.dailycodework.dreamshops.security.entities.MailBody;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -29,5 +30,14 @@ public class EmailService {
         } catch (MessagingException e) {
             throw new RuntimeException("Failed to send email: " + e.getMessage(), e);
         }
+    }
+
+    public void sendOrderConfirmation(Order order){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(order.getUser().getEmail());
+        message.setSubject("Order confirmation");
+        //TODO: include arrival data of order
+        message.setText("Your order has been confirmed. Order ID " + order.getOrderId() );
+        emailSender.send(message);
     }
 }

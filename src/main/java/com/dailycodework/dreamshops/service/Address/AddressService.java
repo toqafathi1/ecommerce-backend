@@ -68,9 +68,9 @@ public class AddressService  implements IAddressService{
         addressRepository.delete(address);
     }
 
-//    @Override
-//    public boolean isAddressOwnedByUser(Long addressId, Long userId) {
-//        return addressRepository.existsByIdAndUserId(addressId , userId);
-//    }
+    @Override
+    public boolean isAddressOwnedByUser(Long addressId, Long userId) {
+        return addressRepository.existsByIdAndUserId(addressId , userId);
+    }
 
 }

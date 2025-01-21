@@ -64,30 +64,30 @@ public class CartItemService  implements ICartItemService{
     }
    @Transactional
     @Override
-    public void removeItemFromCart(Long cartId, Long productId) {
+    public void removeItemFromCart(Long cartId, Long itemId) {
        User user = userService.getAuthenticatedUser();
        Cart cart =cartService.getCart(cartId);
        cartService.validateCartOwnership(user , cart);
 
-        CartItem itemToRemove = getCartItem(cartId, productId);
+        CartItem itemToRemove = getCartItem(cartId, itemId);
         cart.removeItem(itemToRemove);
         cartRepository.save(cart);
     }
 
     @Transactional
     @Override
-    public void updateItemQuantity(Long cartId, Long productId, int quantity) {
+    public void updateItemQuantity(Long cartId, Long itemId, int quantity) {
         User user = userService.getAuthenticatedUser();
         Cart cart =cartService.getCart(cartId);
         cartService.validateCartOwnership(user , cart);
 
-        Product product = productService.getProductById(productId);
+        Product product = productService.getProductById(itemId);
         if(quantity > product.getInventory()){
             throw new IllegalArgumentException("Not enough inventory for the product. available: " + product.getInventory());
         }
         CartItem cartItem = cart.getItems()
                 .stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
+                .filter(item -> item.getProduct().getId().equals(itemId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException("Item not found in the cart "));
         cartItem.setQuantity(quantity);

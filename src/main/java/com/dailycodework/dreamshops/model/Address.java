@@ -1,5 +1,6 @@
 package com.dailycodework.dreamshops.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "user_id" , nullable = false)
-    @JsonIgnore
+    @JsonBackReference
     private User user ;
 
 }

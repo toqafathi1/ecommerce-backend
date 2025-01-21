@@ -11,5 +11,7 @@ public interface IAddressService {
     AddressResponse updateAddress(Long addressId , AddAddressRequest request);
     List<AddressResponse> getAddressesByUserId(Long userId);
     void deleteAddress(Long addressId);
+
+    boolean isAddressOwnedByUser(Long addressId, Long userId);
 //    boolean isAddressOwnedByUser(Long addressId , Long userId);
 }

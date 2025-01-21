@@ -9,11 +9,14 @@ import com.dailycodework.dreamshops.model.*;
 import com.dailycodework.dreamshops.repository.OrderRepository;
 import com.dailycodework.dreamshops.repository.ProductRepository;
 import com.dailycodework.dreamshops.repository.UserRepository;
+import com.dailycodework.dreamshops.security.service.EmailService;
 import com.dailycodework.dreamshops.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -33,14 +36,23 @@ public class OrderService implements IOrderService {
     private final UserRepository userRepository ;
     private final CartService cartService;
     private final ModelMapper modelMapper;
-
+    private final EmailService emailService;
 
     @Transactional
     @Override
-    public Order placeOrder() {
-        Long  userId = getAuthenticatedUserId();
+    public Order placeOrder(Long userId , String phoneNumber) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(()-> new ResourceNotFoundException("User not found!")) ;
+
+        if(!user.isEnabled()){
+            throw new UnauthorizedAccessException("You need to verify your email first");
+        }
+
+        if(user.getAddresses().isEmpty()){
+            throw new IllegalStateException("Cannot place an order: User does not have an address");
+        }
         // Fetch cart
-        Cart cart   = cartService.getCartByUserId(userId);
+        Cart cart   = cartService.getCartByUserId(user.getId());
         if(cart.getItems().isEmpty()){
             throw new IllegalStateException("cannot place an order with an empty cart ");
         }
@@ -61,9 +73,16 @@ public class OrderService implements IOrderService {
         }
         order.setOrderItems(new HashSet<>(orderItemList));
         order.setTotalAmount(calculateTotalAmount(orderItemList));
+        order.setPhoneNumber(phoneNumber);
 
         Order savedOrder = orderRepository.save(order);
         cartService.clearCart(cart.getId());
+
+        try {
+            emailService.sendOrderConfirmation(savedOrder);
+        } catch (MailException e) {
+            throw new MailSendException("Failed to send order confirmation exception for order " + e);
+        }
         return savedOrder;
     }
 
@@ -74,7 +93,6 @@ public class OrderService implements IOrderService {
         order.setOrderDate(LocalDateTime.now());
         return  order;
     }
-
      private List<OrderItem> createOrderItems(Order order, Cart cart) {
         // convert items in cart to oderItem object
         List<OrderItem> orderItems = new ArrayList<>();
@@ -93,9 +111,7 @@ public class OrderService implements IOrderService {
                     );
             orderItems.add(orderItem);
         }
-
      return orderItems;
-
      }
 
      private BigDecimal calculateTotalAmount(List<OrderItem> orderItemList) {

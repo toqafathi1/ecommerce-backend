@@ -63,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok(new ApiResponse("User promoted to Admin" , userDto));
     }
 
-    @PostMapping("/{userId}/demote")
+    @PostMapping("/{adminId}/demote")
     public ResponseEntity<ApiResponse> demoteToUser(@PathVariable Long adminId){
         User user = userService.demoteToUser(adminId);
         UserDto userDto = userService.convertUserToDto(user);

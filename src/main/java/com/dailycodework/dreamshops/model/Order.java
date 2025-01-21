@@ -4,6 +4,7 @@ import com.dailycodework.dreamshops.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,11 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @NotNull(message = "order status cannot be null")
     private OrderStatus orderStatus;
+
     private LocalDateTime cancellationDate;
+    //TODO: validate phone number
+    private String phoneNumber;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private Set<OrderItem> orderItems = new HashSet<>();
